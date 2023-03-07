@@ -1,0 +1,251 @@
+<?php
+    //Memulai session
+    session_start();
+    //Koneksi database
+    include '../../config/database.php';
+    $kode_produk="";
+    $stok_produk=0;
+    $jumlah_beli=0;
+    $aksi="";
+    $no_invoice="";
+    //Menerima data yang dikirim dengan ajax
+    if (isset($_POST['kode_produk'])) {
+        $kode_produk=$_POST['kode_produk'];
+    }
+    if (isset($_POST['stok_produk'])) {
+        $stok_produk=$_POST['stok_produk'];
+    }
+    if (isset($_POST['jumlah_beli'])) {
+        $jumlah_beli=$_POST['jumlah_beli'];
+    }
+    if (isset($_POST['aksi'])) {
+        $aksi=$_POST['aksi'];
+    }
+    if (isset($_POST['aksi'])) {
+        $aksi=$_POST['aksi'];
+    }
+    if (isset($_POST['noInvoice'])) {
+        $no_invoice=$_POST['noInvoice'];
+    }
+
+
+    //Mengambil data Penjualan
+    $queryPenjualan = mysqli_query($kon, "SELECT * FROM penjualan where no_invoice='$no_invoice'");
+    $dataPenjualan = mysqli_fetch_array($queryPenjualan);
+
+    //Mengambil data pembayaran_hutang
+    $queryPembayaranHutang = mysqli_query($kon, "SELECT * FROM pembayaran_hutang where no_invoice='$no_invoice'");
+    $dataPembayaranHutang = mysqli_fetch_array($queryPembayaranHutang);
+
+    //Mengambil data Detail Penjualan
+    $queryGetDetail = mysqli_query($kon, "SELECT * FROM detail_penjualan where no_invoice='$no_invoice'");
+    $productGetDetail = mysqli_fetch_array($queryGetDetail);
+    
+    //Mengambil data produk
+    $query = mysqli_query($kon, "SELECT * FROM produk where kode_produk='$kode_produk'");
+    $productByCode = mysqli_fetch_array($query);
+
+
+    //Memecah data produk ke dalam array
+    if (isset($_POST['aksi'])) {
+    $itemArrayHutang = array($productByCode['kode_produk']=>array('jumlah_beli'=>$jumlah_beli,'id_produk'=>$productByCode['id_produk'],'kode_produk'=>$productByCode['kode_produk'],'nama_produk'=>$productByCode['nama_produk'],'harga_jual'=>$productByCode['harga_jual']));
+    }
+    switch($aksi) {	
+        //Menambah produk ke kerangjang belanja
+        case "tambahkan_ke_keranjang":
+        if(!empty($_SESSION["edit_cart_item_hutang"])) {
+            if(in_array($productByCode['kode_produk'],array_keys($_SESSION["edit_cart_item_hutang"]))) {
+                foreach($_SESSION["edit_cart_item_hutang"] as $k => $v) {
+                        if($productByCode['kode_produk'] == $k) {
+                            if(empty($_SESSION["edit_cart_item_hutang"][$k]["jumlah_beli"])) {
+                                $_SESSION["edit_cart_item_hutang"][$k]["jumlah_beli"] = 0;
+                            }
+                            if ( $_SESSION["edit_cart_item_hutang"][$k]["jumlah_beli"]+$jumlah_beli<=$stok_produk){
+                                $_SESSION["edit_cart_item_hutang"][$k]["jumlah_beli"] += $jumlah_beli;
+                            }else {
+                                echo "<script> alert('Jumlah beli tidak boleh melebihi stok produk');</script>";
+                                $_SESSION["edit_cart_item_hutang"][$k]["jumlah_beli"];
+                            }
+                            
+                        }
+                }
+            } else {
+                $_SESSION["edit_cart_item_hutang"] = array_merge($_SESSION["edit_cart_item_hutang"],$itemArrayHutang);
+            }
+        } else {
+            $_SESSION["edit_cart_item_hutang"] = $itemArrayHutang;
+        }
+        break;
+        case "hapus_item":
+            //Menghapus produk dari keranjang belanja
+    		if(!empty($_SESSION["edit_cart_item_hutang"])) {
+                foreach($_SESSION["edit_cart_item_hutang"] as $k => $v) {
+                        if($_POST["kode_produk"] == $k)
+                            unset($_SESSION["edit_cart_item_hutang"][$k]);
+                        if(empty($_SESSION["edit_cart_item_hutang"]))
+                            unset($_SESSION["edit_cart_item_hutang"]);
+                }
+            }
+        break;
+    }
+?>
+
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+    <thead>
+        <tr>
+      
+            <th><strong>Kode</strong></th>
+            <th><strong>Produk</strong></th>
+            <th width='15%'><strong>Harga</strong></th>
+            <th width='13%'><strong>Qty</strong></th>
+            <th width='20%'><strong>Total</strong></th>
+            <th><strong>Opsi</strong></th>
+        </tr>	
+    </thead>
+    <tbody>
+
+<?php
+$tot=0;	if(!empty($_SESSION["edit_cart_item_hutang"])) {
+    foreach ($_SESSION["edit_cart_item_hutang"] as $item){
+        $harga=$item["harga_jual"];
+        $qty=$item["jumlah_beli"];
+        $sub_tot=$item["jumlah_beli"]*$item["harga_jual"];
+
+        $tot+=$sub_tot;
+		?>
+             <input type="hidden" name="produk_dibeli[]" value="<?php echo $item["kode_produk"]; ?>"/>
+            <input type="hidden" name="qty[]" value="<?php echo $qty; ?>"/>
+            <input type="hidden" name="harga[]" value="<?php echo $harga; ?>"/> 
+			<tr>
+                <td><?php echo $item["kode_produk"]; ?></td>
+				<td><?php echo $item["nama_produk"]; ?></td>
+                <td><?php echo number_format($harga,0,',','.'); ?></td>
+                <td> <?php echo $qty; ?> </td>
+                <td><?php echo number_format($sub_tot,0,',','.'); ?></td>
+                <td>  <button type="button" onClick="hapus_item('hapus_item','<?php echo $item["kode_produk"]; ?>')"  id="batal_pembelian" class="btn-hapus btn btn-danger btn-circle"  ><i class="fas fa-trash"></i></button></td>
+			</tr>
+    <?php }} ?>
+            <tr>
+                <td colspan="4" style="text-align:right"><h4>Total</h4></td>
+                <td colspan="2"><h4>Rp. <?php  echo number_format($tot,0,',','.'); ?></h4></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align:right"><h4>Diskon</h4></td>
+                <td colspan="2">
+                    <h4>
+                        <input name="diskon" id="diskon" type="number" class="form-control" value="<?php echo $dataPenjualan['diskon'] ?>" required>
+                    </h4>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align:right"><h4>Total Harga</h4></td>
+                <td colspan="2">
+                    <input disabled type="text" name="total_diskon" id="tampil_total_diskon" class="form-control">    
+                </td>
+            </tr>
+
+    </tbody>
+</table>
+
+
+<div class="row">
+    <div class="col-sm-7">
+        <div class="form-group">
+            <input name="total_bayar" id="total_bayar" value="<?php echo $tot; ?>" type="hidden" class="form-control">
+            <input name="diskon" id="nilai_diskon" type="hidden" class="form-control">
+            <input name="total_bayar_diskon" id="total_diskon" type="hidden" class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label>Uang Muka: </label>
+            <input name="uang_muka" id="uang_muka"  type="number" class="form-control" value="<?php echo $dataPenjualan['bayar'] ?>" required>
+        </div>
+        <div class="form-group">
+            <label>Cicilan Bulan:</label>
+            <input name="cicilan_bulan" id="cicilan_bulan"  type="number" class="form-control" value="<?php echo $dataPembayaranHutang['cicilan_ke'] ?>" required>
+        </div>
+        <div class="form-group">
+            <div id="nominal_bayar" class='font-weight-bold'></div>
+        </div>
+        <div class="form-group">
+            <label>Kekurangan:</label>
+            <input type="text" id="tampil_kekurangan" class="form-control"  value="<?php echo $dataPenjualan['kembali'] ?>" disabled>
+            <input type="hidden" name="kekurangan" id="kekurangan" class="form-control">
+        </div>
+        <div class="form-group">
+            <div id="cicilan_perbulan" class='font-weight-bold'></div>
+        </div>
+        <div class="form-group">
+            <button  type="submit" id="buat_transaksi_hutang" name="buat_transaksi_hutang" class="btn btn-success btn-block" disabled><span class="text">Buat Transaksi</span></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Membuat format rupiah
+    function format_rupiah(nominal){
+        var  reverse = nominal.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+         return ribuan	= ribuan.join('.').split('').reverse().join('');
+    }
+
+    //Menghitung kembalian dan mengaktifkan tombol buat transaksi
+    $("#uang_muka").bind('keyup', function () {
+        var total_diskon = $('#total_diskon').val();
+        var uang_muka = $('#uang_muka').val();
+
+        var kekurangan = uang_muka-total_diskon;
+
+        $('#kekurangan').val(kekurangan);
+        $('#tampil_kekurangan').val('Rp. '+format_rupiah(kekurangan));
+        document.getElementById("buat_transaksi_hutang").disabled = false;
+            
+    });
+
+    $("#diskon").bind('keyup', function () {
+        var total_bayar = $('#total_bayar').val();
+        var diskon = $('#diskon').val();
+
+        var total_diskon = total_bayar-diskon;
+
+        if (total_diskon>=0 && total_bayar!=0){
+            $('#total_diskon').val(total_diskon);
+            $('#nilai_diskon').val(diskon);
+            $('#tampil_total_diskon').val('Rp. '+format_rupiah(total_diskon));
+            // document.getElementById("buat_transaksi").disabled = false;
+        }else {
+            // $('#total_diskon').val(0);
+            // document.getElementById("buat_transaksi").disabled = true;
+        }
+            
+    });
+
+    //Fungsi menghapus produk dari keranjang belanja
+    function hapus_item(aksi,kode_produk) {
+        var jumlah_beli=0;
+        $.ajax({
+            url: 'page/hutang/keranjang-belanja.php',
+            method: 'POST',
+            data:{kode_produk:kode_produk,aksi:aksi,jumlah_beli:jumlah_beli},
+            success:function(data){
+                $('#tampil_cart').html(data);
+            }
+        }); 
+    }
+
+    //Membuat info cicilan per bulan
+    $('#cicilan_bulan').bind('keyup', function () {
+        var cicilan_bulan=$("#cicilan_bulan").val();
+        var kekurangan=$("#kekurangan").val();
+        var nilaipluskekurangan = Math.abs(kekurangan);
+        cicilanPerBulan = nilaipluskekurangan / cicilan_bulan;
+        $("#cicilan_perbulan").text('Estimasi Cicilan Perbulan : Rp.'+cicilanPerBulan.toFixed(2));     
+    }); 
+
+    //Membuat info nominal bayar
+    $('#uang_muka').bind('keyup', function () {
+        var bayar=$("#uang_muka").val();
+        $("#nominal_bayar").text('Jumlah Uang Muka : Rp.'+format_rupiah(bayar));     
+    }); 
+
+</script>
