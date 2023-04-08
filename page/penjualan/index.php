@@ -35,7 +35,7 @@
 
 <div class="card shadow mb-4">
   <div class="card-header py-3">
- </div>
+  </div>
   <div class="card-body">
     <!-- Tabel daftar penjualan -->
     <div class="table-responsive">
@@ -47,9 +47,10 @@
             <th>Tanggal</th>
             <th>Kasir</th>
             <th>Pelanggan</th>
-            <th>Total Bayar</th>
-            <th>Bayar</th>
-            <th>Kembali</th>
+            <th>Total Transaksi</th>
+            <th>Total Harga</th>
+            <th>Ongkos Kirim</th>
+            <th>Diskon</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -60,9 +61,9 @@
                 $kasir=0;
                 if ($_SESSION["level"]=="Kasir"){
                   $kasir=$_SESSION["id_pengguna"];
-                  $sql="select * from penjualan left join pelanggan on penjualan.kode_pelanggan=pelanggan.kode_pelanggan left join pengguna on pengguna.id_pengguna=penjualan.id_kasir where id_kasir=$kasir AND tipe_pembayaran = 'TUNAI' order by id_penjualan desc";
+                  $sql="select * from penjualan left join pelanggan on penjualan.kode_pelanggan=pelanggan.kode_pelanggan left join pengguna on pengguna.id_pengguna=penjualan.id_kasir where id_kasir=$kasir order by id_penjualan desc";
                 }else {
-                  $sql="select * from penjualan left join pelanggan on penjualan.kode_pelanggan=pelanggan.kode_pelanggan left join pengguna on pengguna.id_pengguna=penjualan.id_kasir where tipe_pembayaran = 'TUNAI' order by id_penjualan desc";
+                  $sql="select * from penjualan left join pelanggan on penjualan.kode_pelanggan=pelanggan.kode_pelanggan left join pengguna on pengguna.id_pengguna=penjualan.id_kasir order by id_penjualan desc";
                 }
              
              $hasil=mysqli_query($kon,$sql);
@@ -77,9 +78,10 @@
                 <td><?php echo date('d-m-Y', strtotime($data["tanggal"])); ?></td>
                 <td><?php echo $data['nama_pengguna']; ?></td>
                 <td><?php echo $data['nama_pelanggan']; ?></td>
-                <td>Rp. <?php echo number_format($data['total_bayar_diskon'],0,',','.'); ?></td>
-                <td>Rp. <?php echo number_format($data['bayar'],0,',','.'); ?></td>
-                <td>Rp. <?php echo number_format($data['kembali'],0,',','.'); ?></td>
+                <td>Rp. <?php echo number_format($data['total_transaksi'],0,',','.'); ?></td>
+                <td>Rp. <?php echo number_format($data['total_bayar'],0,',','.'); ?></td>
+                <td>Rp. <?php echo number_format($data['ongkos_kirim'],0,',','.'); ?></td>
+                <td>Rp. <?php echo number_format($data['diskon'],0,',','.'); ?></td>
                 <td>
                     <a href="index.php?page=detail_penjualan&id_penjualan=<?php echo $data['id_penjualan']; ?>" class="btn btn-success btn-circle" id_penjualan="<?php echo $data['id_penjualan']; ?>"  data-toggle="tooltip" title="Detail penjualan" data-placement="top"><i class="fas fa-mouse-pointer"></i></a>
                     <?php if ($_SESSION["level"]=="Admin"): ?>

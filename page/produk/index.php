@@ -58,7 +58,7 @@
                 // include database
                 include 'config/database.php';
                 // perintah sql untuk menampilkan daftar produk yang berelasi dengan tabel kategori produk
-                $sql="select * from produk p left join kategori_produk k on k.id_kt_produk=p.kategori_produk left join supplier s on s.id_supplier=p.supplier order by id_produk desc";
+                $sql="select * from produk p left join kategori_produk k on k.id_kt_produk=p.kategori_produk left join supplier s on s.id_supplier=p.supplier order by nama_produk ASC";
                 $hasil=mysqli_query($kon,$sql);
                 $no=0;
                 //Menampilkan data dengan perulangan while

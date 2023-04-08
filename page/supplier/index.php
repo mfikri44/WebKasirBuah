@@ -53,7 +53,7 @@
                   //Koneksi database
                   include 'config/database.php';
                   // perintah sql untuk menampilkan daftar supplier
-                  $sql="select * from supplier order by id_supplier desc";
+                  $sql="select * from supplier order by nama_supplier asc";
                   $hasil=mysqli_query($kon,$sql);
                   $no=0;
                   //Menampilkan data dengan perulangan while

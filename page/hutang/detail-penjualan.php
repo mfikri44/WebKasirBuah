@@ -138,7 +138,7 @@
                 </table>
             </div>
             <!-- Tombol cetak invoice -->
-            <a href="page/hutang/cetak/cetak-detail-penjualan.php?no_invoice=<?php echo $data['no_invoice'];?>" target='blank' class="btn btn-primary btn-icon-split"><span class="text">Cetak Invoice</span></a>
+            <!-- <a href="page/hutang/cetak/cetak-detail-penjualan.php?no_invoice=<?php echo $data['no_invoice'];?>" target='blank' class="btn btn-primary btn-icon-split"><span class="text">Cetak Invoice</span></a> -->
             <a href="page/hutang/cetak/cetak-detail-penjualan-pdf.php?no_invoice=<?php echo $data['no_invoice'];?>" target='blank' class="btn btn-danger btn-icon-pdf"><span class="text">Export PDF</span></a>
         </div>
     <!--rows -->

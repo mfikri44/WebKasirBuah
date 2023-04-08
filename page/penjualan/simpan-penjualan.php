@@ -22,18 +22,17 @@
         $tanggal=date("Y-m-d H:i");
         $kode_pelanggan=input($_POST['kode_pelanggan']);
         $total_bayar=input($_POST['total_bayar']);
-        $bayar=input($_POST['bayar']);
-        $kembali=input($_POST['kembali']);
+        $ongkos_kirim=input($_POST['ongkos_kirim']);
 
         $diskon=input($_POST['diskon']);
-        $total_bayar_diskon=input($_POST['total_bayar_diskon']);
+        $total_transaksi=input($_POST['total_transaksi']);
         $tipe_pembayaran=input($_POST['tipe_pembayaran']);
 
         $waktu=date("Y-m-d H:i");
         $log_aktivitas="Input penjualan No Invoice #$no_invoice ";
 
         //Insert data ke tabel penjualan
-        $simpan_penjualan=mysqli_query($kon,"insert into penjualan (no_invoice,id_kasir,tanggal,kode_pelanggan,total_bayar,bayar,kembali,diskon,total_bayar_diskon,tipe_pembayaran) values ('$no_invoice','$id_kasir','$tanggal','$kode_pelanggan','$total_bayar','$bayar','$kembali','$diskon','$total_bayar_diskon','$tipe_pembayaran')");
+        $simpan_penjualan=mysqli_query($kon,"insert into penjualan (no_invoice,id_kasir,tanggal,kode_pelanggan,total_bayar,ongkos_kirim,diskon,total_transaksi,tipe_pembayaran) values ('$no_invoice','$id_kasir','$tanggal','$kode_pelanggan','$total_bayar','$ongkos_kirim','$diskon','$total_transaksi','$tipe_pembayaran')");
        
         //Menyiman aktivitas
         $simpan_aktivitas=mysqli_query($kon,"insert into log_aktivitas (waktu,aktivitas,id_pengguna) values ('$waktu','$log_aktivitas',$id_kasir)");

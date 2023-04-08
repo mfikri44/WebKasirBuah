@@ -12,10 +12,18 @@
     // $invoice = sprintf("A%03s", $id_penjualan);
 
 
-    $query = mysqli_query($kon, "SELECT * FROM penjualan WHERE tipe_pembayaran ='TUNAI'");        
-    $count=mysqli_num_rows($query);
-    $count++;
-    $invoice = sprintf("A%06s", $count);
+    $query = mysqli_query($kon, "SELECT * FROM penjualan");        
+    $rowcount=mysqli_num_rows($query);
+    if($rowcount == 0){
+        $huruf = "A";
+        $invoice = $huruf . sprintf("%06s", 1);
+    }else{
+        $query = mysqli_query($kon, "SELECT * FROM penjualan ORDER BY id_penjualan DESC LIMIT 1");
+        $data = mysqli_fetch_array($query);
+        $no_invoice = $data['no_invoice'];
+        $no_invoice++;
+        $invoice =  sprintf("%06s", $no_invoice);
+    }
 
 ?>
 
@@ -23,7 +31,7 @@
  <form action="page/penjualan/simpan-penjualan.php" method="post">
     <input type="hidden" name="no_invoice" value="<?php echo $invoice; ?>"/>
     <input type="hidden" name="kode_pelanggan" value="3" id="kode_pelanggan" />
-    <input type="hidden" name="tipe_pembayaran" value="TUNAI"/>
+    <input type="hidden" name="tipe_pembayaran" value=" "/>
     <input type="hidden" name="id_kasir" value="<?php echo $_SESSION["id_pengguna"]; ?>" id="id_kasir" />
 
     <div class="card shadow mb-4">

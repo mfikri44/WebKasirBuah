@@ -75,12 +75,21 @@ session_start();
 
     // mengambil data produk dengan kode paling besar
     include '../../config/database.php';
-    $query = mysqli_query($kon, "SELECT max(id_produk) as kodeTerbesar FROM produk");
-    $data = mysqli_fetch_array($query);
-    $id_produk = $data['kodeTerbesar'];
-    $id_produk++;
-    $huruf = "P";
-    $kodeProduk = $huruf . sprintf("%04s", $id_produk);
+    $querygetall = mysqli_query($kon, "SELECT * FROM produk");
+    $rowcount=mysqli_num_rows($querygetall);
+    // echo $rowcount;
+    if($rowcount == 0){
+        $huruf = "P";
+        $kodeProduk = $huruf . sprintf("%04s", 1);
+    }else{
+        $query = mysqli_query($kon, "SELECT * FROM produk ORDER BY id_produk DESC LIMIT 1");
+        $data = mysqli_fetch_array($query);
+        $id_produk = $data['kode_produk'];
+        $id_produk++;
+        $huruf = "P";
+        $kodeProduk =  sprintf("%04s", $id_produk);
+    }
+    
 
 ?>
 <form action="page/produk/tambah-produk.php" method="post" enctype="multipart/form-data">

@@ -72,12 +72,20 @@ session_start();
 <?php
     // mengambil data pengguna dengan kode paling besar
     include '../../config/database.php';
-    $query = mysqli_query($kon, "SELECT max(id_pengguna) as kodeTerbesar FROM pengguna");
-    $data = mysqli_fetch_array($query);
-    $id_pengguna = $data['kodeTerbesar'];
-    $id_pengguna++;
-    $huruf = "U";
-    $kodepengguna = $huruf . sprintf("%03s", $id_pengguna);
+    $querygetall = mysqli_query($kon, "SELECT * FROM pengguna");
+    $rowcount=mysqli_num_rows($querygetall);
+    // echo $rowcount;
+    if($rowcount == 0){
+        $huruf = "U";
+        $kodepengguna = $huruf . sprintf("%04s", 1);
+    }else{
+        $query = mysqli_query($kon, "SELECT * FROM pengguna ORDER BY id_pengguna DESC LIMIT 1");
+        $data = mysqli_fetch_array($query);
+        $kode_pengguna = $data['kode_pengguna'];
+        $kode_pengguna++;
+        $huruf = "U";
+        $kodepengguna =  sprintf("%03s", $kode_pengguna);
+    }
 ?>
 <form action="page/pengguna/tambah-pengguna.php" method="post" enctype="multipart/form-data">
     <div class="form-group">

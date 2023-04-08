@@ -53,12 +53,20 @@
    
     // mengambil data pelanggan dengan kode paling besar
     include '../../config/database.php';
-    $query = mysqli_query($kon, "SELECT max(id_pelanggan) as kodeTerbesar FROM pelanggan");
-    $data = mysqli_fetch_array($query);
-    $id_pelanggan = $data['kodeTerbesar'];
-    $id_pelanggan++;
-    $huruf = "PN";
-    $kodepelanggan = $huruf . sprintf("%04s", $id_pelanggan);
+    $querygetall = mysqli_query($kon, "SELECT * FROM pelanggan");
+    $rowcount=mysqli_num_rows($querygetall);
+    // echo $rowcount;
+    if($rowcount == 0){
+        $huruf = "PN";
+        $kodepelanggan = $huruf . sprintf("%04s", 1);
+    }else{
+        $query = mysqli_query($kon, "SELECT * FROM pelanggan ORDER BY id_pelanggan DESC LIMIT 1");
+        $data = mysqli_fetch_array($query);
+        $kode_pelanggan = $data['kode_pelanggan'];
+        $kode_pelanggan++;
+        $huruf = "PN";
+        $kodepelanggan =  sprintf("%04s", $kode_pelanggan);
+    }
 ?>
     <form action="page/pelanggan/tambah-pelanggan.php" method="post">
       <div class="form-group">

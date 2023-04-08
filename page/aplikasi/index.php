@@ -34,8 +34,12 @@
                             <input type="hidden" class="form-control" value="<?php echo $data['id'];?>" name="id">  
                         </div>
                         <div class="form-group">
+                            <label>Nama Aplikasi:</label>
+                            <input type="text" class="form-control" value="<?php echo $data['nama_aplikasi'];?>" name="nama_aplikasi" required>  
+                        </div>
+                        <div class="form-group">
                             <label>Nama Toko:</label>
-                            <input type="text" class="form-control" value="<?php echo $data['nama_aplikasi'];?>" name="nama" required>  
+                            <input type="text" class="form-control" value="<?php echo $data['nama_toko'];?>" name="nama_toko" required>  
                         </div>
                         <div class="form-group">
                             <label>Alamat:</label>

@@ -57,7 +57,7 @@
                   // include database
                   include 'config/database.php';
                   // perintah sql untuk menampilkan daftar pelanggan
-                  $sql="select * from pelanggan order by id_pelanggan desc";
+                  $sql="select * from pelanggan order by nama_pelanggan ASC";
                   $hasil=mysqli_query($kon,$sql);
                   $no=0;
                   //Menampilkan data dengan perulangan while

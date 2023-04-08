@@ -96,7 +96,7 @@
                 <div class="p-5">
                   <div class="text-center">
                   <img src="page/aplikasi/logo/<?php echo $data['logo'];?>" id="preview" width="35%" class="img-thumbnail">
-                    <h1 class="h4 text-gray-900 mb-4"><?php echo strtoupper($data['nama_aplikasi']);?></h1>
+                    <h1 class="h4 text-gray-900 mb-4"><?php echo strtoupper($data['nama_toko']);?></h1>
                   <?php 	if ($_SERVER["REQUEST_METHOD"] == "POST") echo $pesan; ?>
                   </div>
                   <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">

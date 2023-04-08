@@ -49,12 +49,20 @@ session_start();
 <?php
     // mengambil data id_supplier dengan kode paling besar
     include '../../config/database.php';
-    $query = mysqli_query($kon, "SELECT max(id_supplier) as kodeTerbesar FROM supplier");
-    $data = mysqli_fetch_array($query);
-    $id_supplier = $data['kodeTerbesar'];
-    $id_supplier++;
-    $huruf = "SP";
-    $kodesupplier = $huruf . sprintf("%04s", $id_supplier);
+
+    $querygetall = mysqli_query($kon, "SELECT * FROM supplier");
+    $rowcount=mysqli_num_rows($querygetall);
+    if($rowcount == 0){
+        $huruf = "SP";
+        $kodesupplier = $huruf . sprintf("%04s", 1);
+    }else{
+        $query = mysqli_query($kon, "SELECT * FROM supplier ORDER BY id_supplier DESC LIMIT 1");
+        $data = mysqli_fetch_array($query);
+        $id_supplier = $data['kode_supplier'];
+        $id_supplier++;
+        $kodesupplier =  sprintf("%04s", $id_supplier);
+    }
+
 ?>
 <form action="page/supplier/tambah-supplier.php" method="post">
         <div class="form-group">

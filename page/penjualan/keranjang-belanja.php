@@ -106,21 +106,25 @@ $tot=0;	if(!empty($_SESSION["cart_item"])) {
 			</tr>
     <?php }} ?>
             <tr>
-                <td colspan="4" style="text-align:right"><h4>Total</h4></td>
-                <td colspan="2"><h4>Rp. <?php  echo number_format($tot,0,',','.'); ?></h4></td>
+                <td colspan="4" style="text-align:right">Total Harga</td>
+                <td colspan="2">Rp. <?php  echo number_format($tot,0,',','.'); ?></td>
             </tr>
             <tr>
-                <td colspan="4" style="text-align:right"><h4>Diskon</h4></td>
+                <td colspan="4" style="text-align:right">Diskon</td>
                 <td colspan="2">
-                    <h4>
-                        <input name="diskon" id="diskon" type="number" class="form-control">
-                    </h4>
+                        <input id="diskon" type="number" class="form-control">
                 </td>
             </tr>
             <tr>
-                <td colspan="4" style="text-align:right"><h4>Total Harga</h4></td>
+                <td colspan="4" style="text-align:right">Ongkos Kirim</td>
                 <td colspan="2">
-                    <input disabled type="text" name="total_diskon" id="tampil_total_diskon" class="form-control">    
+                        <input id="ongkos_kirim" type="number" class="form-control">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align:right">Total Transaksi</td>
+                <td colspan="2">
+                    <input disabled type="text" name="total_harga" id="tampil_total_harga" class="form-control">    
                 </td>
             </tr>
 
@@ -131,26 +135,23 @@ $tot=0;	if(!empty($_SESSION["cart_item"])) {
 <div class="row">
     <div class="col-sm-7">
         <div class="form-group">
-            <input name="total_bayar" id="total_bayar" value="<?php echo $tot; ?>" type="hidden"  class="form-control">
+            <input name="total_bayar" id="total_bayar" value="<?php echo $tot; ?>" type="hidden" class="form-control">
             <input name="diskon" id="nilai_diskon" type="hidden"  class="form-control">
-            <input name="total_bayar_diskon" id="total_diskon" type="hidden"  class="form-control">
+            <input name="ongkos_kirim" id="nilai_ongkir" type="hidden"  class="form-control">
+            <input name="total_transaksi" id="total_harga" type="hidden"  class="form-control">
         </div>
         
         <!--Menampilkan cash or kredit--> 
         <div id="tampil_cashorkredit"></div>
 
-        <div class="form-group">
-            <label>Bayar:</label>
-            <input name="bayar" id="bayar"  type="text"  class="form-control">
-        </div>
-        <div class="form-group">
-            <div id="nominal_bayar" class='font-weight-bold'></div>
-        </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
+            <div id="tampil_ongkir" class='font-weight-bold'></div>
+        </div> -->
+        <!-- <div class="form-group">
             <label>Kembali:</label>
             <input type="text" id="tampil_kembali" class="form-control" disabled>
             <input type="hidden" name="kembali" id="kembali" class="form-control">
-        </div>
+        </div> -->
         <div class="form-group">
             <button  type="submit" id="buat_transaksi" name="buat_transaksi" class="btn btn-success btn-block" disabled><span class="text">Buat Transaksi</span></button>
         </div>
@@ -165,41 +166,87 @@ $tot=0;	if(!empty($_SESSION["cart_item"])) {
          return ribuan	= ribuan.join('.').split('').reverse().join('');
     }
 
-    //Menghitung kembalian dan mengaktifkan tombol buat transaksi
-    $("#bayar").bind('keyup', function () {
-    var total_diskon = $('#total_diskon').val();
-    var bayar = $('#bayar').val();
+    // //Menghitung kembalian dan mengaktifkan tombol buat transaksi
+    // $("#bayar").bind('keyup', function () {
+    // var total_diskon = $('#total_diskon').val();
+    // var bayar = $('#bayar').val();
 
-    var kembali = bayar-total_diskon;
+    // var kembali = bayar-total_diskon;
 
-    if (kembali>=0 && total_diskon!=0){
-        $('#kembali').val(kembali);
-        $('#tampil_kembali').val('Rp. '+format_rupiah(kembali));
-        document.getElementById("buat_transaksi").disabled = false;
-    }else {
-        $('#kembali').val(0);
-        document.getElementById("buat_transaksi").disabled = true;
-    }
+    // if (kembali>=0 && total_diskon!=0){
+    //     // $('#kembali').val(kembali);
+    //     // $('#tampil_kembali').val('Rp. '+format_rupiah(kembali));
+    //     document.getElementById("buat_transaksi").disabled = false;
+    // }else {
+    //     $('#kembali').val(0);
+    //     document.getElementById("buat_transaksi").disabled = true;
+    // }
             
-    });
+    // });
 
-    $("#diskon").bind('keyup', function () {
-    var total_bayar = $('#total_bayar').val();
+    //Ongkos Kirim dan mengaktifkan tombol buat transaksi
+    $("#ongkos_kirim").bind('keyup', function () {
+    var ongkos_kirim = $('#ongkos_kirim').val();
     var diskon = $('#diskon').val();
+    var total_bayar = $('#total_bayar').val();
 
     var total_diskon = total_bayar-diskon;
-
-    if (total_diskon>=0 && total_bayar!=0){
-        $('#total_diskon').val(total_diskon);
+    var total_harga = parseInt(total_diskon) + parseInt(ongkos_kirim);
+   
+    if (ongkos_kirim>0 && diskon>=0){
+        $('#nilai_ongkir').val(ongkos_kirim);
         $('#nilai_diskon').val(diskon);
-        $('#tampil_total_diskon').val('Rp. '+format_rupiah(total_diskon));
+        $('#total_harga').val(total_harga);
+        $('#tampil_total_harga').val('Rp. '+format_rupiah(total_harga));
         document.getElementById("buat_transaksi").disabled = false;
     }else {
-        $('#total_diskon').val(0);
+        $('#nilai_ongkir').val(ongkos_kirim);
+        $('#tampil_total_harga').val(0);
         document.getElementById("buat_transaksi").disabled = true;
     }
             
     });
+
+    //Ongkos Kirim dan mengaktifkan tombol buat transaksi
+    $("#diskon").bind('keyup', function () {
+    var ongkos_kirim = $('#ongkos_kirim').val();
+    var diskon = $('#diskon').val();
+    var total_bayar = $('#total_bayar').val();
+
+    var total_diskon = total_bayar-diskon;
+    var total_harga = parseInt(total_diskon) + parseInt(ongkos_kirim);
+   
+    if (ongkos_kirim>0 && diskon>=0){
+        $('#nilai_ongkir').val(ongkos_kirim);
+        $('#nilai_diskon').val(diskon);
+        $('#total_harga').val(total_harga);
+        $('#tampil_total_harga').val('Rp. '+format_rupiah(total_harga));
+        document.getElementById("buat_transaksi").disabled = false;
+    }else {
+        $('#nilai_ongkir').val(ongkos_kirim);
+        $('#tampil_total_harga').val(0);
+        document.getElementById("buat_transaksi").disabled = true;
+    }
+            
+    });
+
+    // $("#diskon").bind('keyup', function () {
+    // var total_bayar = $('#total_bayar').val();
+    // var diskon = $('#diskon').val();
+
+    // var total_diskon = total_bayar-diskon;
+
+    // if (total_diskon>=0 && total_bayar!=0){
+    //     $('#total_diskon').val(total_diskon);
+    //     $('#nilai_diskon').val(diskon);
+    //     $('#tampil_total_diskon').val('Rp. '+format_rupiah(total_diskon));
+    //     // document.getElementById("buat_transaksi").disabled = false;
+    // }else {
+    //     $('#total_diskon').val(0);
+    //     // document.getElementById("buat_transaksi").disabled = true;
+    // }
+            
+    // });
 
     //Fungsi menghapus produk dari keranjang belanja
     function hapus_item(aksi,kode_produk) {
@@ -213,12 +260,6 @@ $tot=0;	if(!empty($_SESSION["cart_item"])) {
             }
         }); 
     }
-
-    //Membuat info nominal bayar
-    $('#bayar').bind('keyup', function () {
-        var bayar=$("#bayar").val();
-        $("#nominal_bayar").text('Rp.'+format_rupiah(bayar));     
-    }); 
 
 </script>
 

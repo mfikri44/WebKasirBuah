@@ -22,7 +22,8 @@ if (isset($_POST['ubah_aplikasi'])) {
 
         //Mengambil kiriman nilai
         $id=$_POST["id"];
-        $nama_aplikasi=input($_POST["nama"]);
+        $nama_aplikasi=input($_POST["nama_aplikasi"]);
+        $nama_toko=input($_POST["nama_toko"]);
         $no_telp=input($_POST["no_telp"]);
         $alamat=input($_POST["alamat"]);
         $website=input($_POST["website"]);
@@ -47,6 +48,7 @@ if (isset($_POST['ubah_aplikasi'])) {
 
                 $sql="update profil_aplikasi set
                 nama_aplikasi='$nama_aplikasi',
+                nama_toko='$nama_toko',
                 no_telp='$no_telp',
                 alamat='$alamat',
                 website='$website',
@@ -58,6 +60,7 @@ if (isset($_POST['ubah_aplikasi'])) {
         }else {
             $sql="update profil_aplikasi set
             nama_aplikasi='$nama_aplikasi',
+            nama_toko='$nama_toko',
             no_telp='$no_telp',
             alamat='$alamat',
             website='$website'

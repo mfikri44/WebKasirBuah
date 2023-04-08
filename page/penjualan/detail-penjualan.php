@@ -65,6 +65,10 @@
                             <td>Pelanggan</td>
                             <td>: <?php echo $data['nama_pelanggan'];?></td>
                         </tr>
+                        <tr>
+                            <td>Tipe Pembayaran</td>
+                            <td>: <?php echo $data['tipe_pembayaran'];?></td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -95,15 +99,17 @@
                         $result=mysqli_query($kon,$sql1);
                         $no=0;
                         $total=0;
-                        $bayar=0;
-                        $kembali=0;
+                        $diskon=0;
+                        $ongkos_kirim=0;
+                        $total_transaksi=0;
                         //Menampilkan data dengan perulangan while
                         while ($ambil = mysqli_fetch_array($result)):
                         $no++;
                         $tot= $ambil['harga_jual']*$ambil['qty'];
                         $total+=$tot;
-                        $bayar=$ambil['bayar'];
-                        $kembali=$ambil['kembali'];
+                        $diskon=$ambil['diskon'];
+                        $ongkos_kirim=$ambil['ongkos_kirim'];
+                        $total_transaksi=$ambil['total_transaksi'];
                     ?>
                     <tr>
                         <td><?php echo $no; ?></td>
@@ -115,19 +121,22 @@
                     </tr>
                         <?php endwhile;?>
                     <tr>
-                        <td colspan="5" style="text-align:right"><strong>Total</strong></td> <td><strong>Rp. <?php echo number_format($total,0,',','.');  ?></strong></td>
+                        <td colspan="5" style="text-align:right"><strong>Total Harga</strong></td> <td><strong>Rp. <?php echo number_format($total,0,',','.');  ?></strong></td>
                     </tr>
                     <tr>
-                        <td colspan="5" style="text-align:right"><strong>Bayar</strong></td> <td><strong>Rp. <?php echo number_format($bayar,0,',','.');  ?></strong></td>
+                        <td colspan="5" style="text-align:right"><strong>Diskon</strong></td> <td><strong>- Rp. <?php echo number_format($diskon,0,',','.');  ?></strong></td>
                     </tr>
                     <tr>
-                        <td colspan="5" style="text-align:right"><strong>Kembali</strong></td> <td><strong>Rp. <?php echo number_format($kembali,0,',','.');  ?></strong></td>
+                        <td colspan="5" style="text-align:right"><strong>Ongkos Kirim</strong></td> <td><strong>Rp. <?php echo number_format($ongkos_kirim,0,',','.');  ?></strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align:right"><strong>Total Transaksi</strong></td> <td><strong>Rp. <?php echo number_format($total_transaksi,0,',','.');  ?></strong></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <!-- Tombol cetak invoice -->
-            <a href="page/penjualan/cetak/cetak-detail-penjualan.php?no_invoice=<?php echo $data['no_invoice'];?>" target='blank' class="btn btn-primary btn-icon-split"><span class="text">Cetak Invoice</span></a>
+            <!-- <a href="page/penjualan/cetak/cetak-detail-penjualan.php?no_invoice=<?php echo $data['no_invoice'];?>" target='blank' class="btn btn-primary btn-icon-split"><span class="text">Cetak Invoice</span></a> -->
             <a href="page/penjualan//cetak/cetak-detail-penjualan-pdf.php?no_invoice=<?php echo $data['no_invoice'];?>" target='blank' class="btn btn-danger btn-icon-pdf"><span class="text">Export PDF</span></a>
         </div>
     <!--rows -->

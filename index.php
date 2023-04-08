@@ -1,7 +1,6 @@
 <?php 
   session_start();
   if (!$_SESSION["id_pengguna"]){
-
         header("Location:login.php");
   }
   include 'config/database.php';
@@ -76,11 +75,11 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <?php if ($_SESSION["level"]=="Kasir"): ?>
             <a class="collapse-item" href="index.php?page=input_penjualan">Input Penjualan</a>
-            <a class="collapse-item" href="index.php?page=input_hutang">Input Hutang Penjualan</a>
+            <!-- <a class="collapse-item" href="index.php?page=input_hutang">Input Hutang Penjualan</a> -->
             <?php endif; ?>
             <a class="collapse-item" href="index.php?page=data_penjualan">Data Penjualan</a>
-            <a class="collapse-item" href="index.php?page=data_penjualan_hutang">Data Hutang Penjualan</a>
-            <a class="collapse-item" href="index.php?page=data_akun_kredit">Data Akun Kredit</a>
+            <!-- <a class="collapse-item" href="index.php?page=data_penjualan_hutang">Data Hutang Penjualan</a> -->
+            <!-- <a class="collapse-item" href="index.php?page=data_akun_kredit">Data Akun Kredit</a> -->
           </div>
         </div>
       </li>
@@ -99,6 +98,19 @@
           </div>
         </div>
       </li>
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#hutang" aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-address-book"></i>
+          <span>Hutang Supplier</span>
+        </a>
+        <div id="hutang" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="index.php?page=data_hutang_supplier">Data Hutang</a>
+            <a class="collapse-item" href="index.php?page=input_hutang_supplier">Input Hutang</a>
+          </div>
+        </div>
+      </li>
       <?php endif; ?>
 
       <?php if ($_SESSION["level"]=="Admin"): ?>
@@ -113,7 +125,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="index.php?page=pengguna&pengguna=Admin">Admin</a>
             <a class="collapse-item" href="index.php?page=pengguna&pengguna=Kasir">Kasir</a>
-            <a class="collapse-item" href="index.php?page=pengguna&pengguna=Manajer">Manajer</a>
+            <!-- <a class="collapse-item" href="index.php?page=pengguna&pengguna=Manajer">Manajer</a> -->
           </div>
         </div>
       </li>
@@ -300,6 +312,15 @@
                 break;
               case 'data_penjualan_kredit':
                 include "page/hutang/data-penjualan-kredit.php";
+                break;
+              case 'data_hutang_supplier':
+                include "page/hutang-supplier/index.php";
+                break;
+              case 'input_hutang_supplier':
+                include "page/hutang-supplier/input-hutang.php";
+                break;
+              case 'edit_hutang_supplier':
+                include "page/hutang-supplier/edit-hutang.php";
                 break;
               case 'laporan':
                 include "page/laporan/index.php";

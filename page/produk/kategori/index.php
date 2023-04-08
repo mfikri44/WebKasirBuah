@@ -50,7 +50,7 @@
                 //Koneksi database
                 include 'config/database.php';
                 // perintah sql untuk menampilkan kategori produk
-                $sql="select * from kategori_produk order by id_kt_produk desc";
+                $sql="select * from kategori_produk ORDER BY nama_kt_produk ASC";
                 $hasil=mysqli_query($kon,$sql);
                 $no=0;
                 //Menampilkan data dengan perulangan while
